@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Andrew Rowe / COMP 272-002
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -246,11 +246,56 @@ public class CuckooHash<K, V> {
 
  	public void put(K key, V value) {
 
-		// ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME AT TOP OF FILE.
-		// Also make sure you read this method's prologue above, it should help
-		// you. Especially the two HINTS in the prologue.
+		/**
+		 * ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME AT TOP OF FILE.
+		 * Also make sure you read this method's prologue above, it should help
+		 * you. Especially the two HINTS in the prologue.
+		 */
 
-		return;
+		// Maximum attempts before triggering rehash...
+		int maxAttempts = CAPACITY;
+		// Attempt counter...
+		int attempts = 0;
+		K currentKey = key;
+		V currentValue = value;
+
+		while (attempts < maxAttempts) {
+			int pos1 = hash1(currentKey);
+
+			// Check if slot and pos1 is empty...
+			if (table[pos1] == null) {
+				table[pos1] = new Bucket<>(currentKey, currentValue);
+				return; // Successfully inserted without collisions.
+			}
+
+			// if pos2 is occupied, kick out the current entry...
+			K displacedKey = table[pos1].getBucKey();
+			V displacedValue = table[pos1].getValue();
+			table[pos1] = new Bucket<>(currentKey, currentValue);
+
+			// Move the displaced element to its alternate location...
+			currentKey = displacedKey;
+			currentValue = displacedValue;
+			int pos2 = hash2(currentKey);
+
+			if (table[pos2] == null) {
+				table[pos2] = new Bucket<>(currentKey, currentValue);
+				return; // Successfully inserted at alternate position.
+			}
+
+			// Prepare for the next round with the displaced item at pos2...
+			currentKey = table[pos2].getBucKey();
+			currentValue = table[pos2].getValue();
+			table[pos2] = new Bucket<>(displacedKey, displacedValue);
+
+			// Increment attempt counter...
+			attempts++;
+		}
+
+		// Rehash if we've hit the maximum number of attempts...
+		rehash();
+		// Retry insertion after rehashing...
+		put(key, value);
 	}
 
 
@@ -351,6 +396,5 @@ public class CuckooHash<K, V> {
 			}
 		}
 	}
-
 }
 

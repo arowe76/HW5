@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Andrew Rowe / COMP 272-002
  *
  *   This java file contains the problem solutions of isSubSet, findKthLargest,
  *   and sort2Arrays methods. You should utilize the Java Collection Framework for
@@ -31,10 +31,20 @@ class ProblemSolutions {
      */
 
     public boolean isSubset(int list1[], int list2[]) {
-
-        // ADD YOU CODE HERE -- DON'T FORGET TO ADD YOR NAME AT TOP OF FILE
-
-        return false;
+        // Create a new HashSet called "set" that takes integers...
+        Set<Integer> set = new HashSet<>();
+            // Add integers to list1 to a HashSet...
+            for (int num : list1) {
+                set.add(num);
+                }
+            // Each integer in list2, check if exists in the HashSet. If missing return false...
+            for (int num : list2) {
+                if (!set.contains(num)) {
+                     return false;
+                }
+            }
+            // If all integers exist in list2, return true
+            return true;
     }
 
 
@@ -52,10 +62,19 @@ class ProblemSolutions {
      */
 
     public int findKthLargest(int[] array, int k) {
-
-        // ADD YOUR CODE HERE
-
-        return 0;
+        // First, initialize a priority queue of size 'k' to store the largest 'k' integer encountered...
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>(k);
+        // Iterate through the array[], adding each integer to the priority queue...
+        for (int num : array) {
+            minHeap.add(num);
+            // If the size of the priority queue (minHeap) exceeds 'k'...
+            if (minHeap.size() > k) {
+                // remove the smallest integer, maintains the top 'k' integers...
+                minHeap.poll();
+            }
+        }
+        // returns the k-th largest integer.
+        return minHeap.peek();
     }
 
 
@@ -73,10 +92,17 @@ class ProblemSolutions {
      */
 
     public int[] sort2Arrays(int[] array1, int[] array2) {
-
-        // ADD YOU CODE HERE
-
-        return null;
+        // Create a new array[] called "combined" that takes integers...
+        List<Integer> combined = new ArrayList<>();
+        // Add integers from array1 and array2 to list "combined"...
+            for (int num : array1) {
+                combined.add(num);
+            }
+            for (int num : array2) {
+                combined.add(num);
+            }
+            // Sort the "combined" list and convert it back to int[]
+            Collections.sort(combined);
+            return combined.stream().mapToInt(Integer::intValue).toArray();
     }
-
 }
